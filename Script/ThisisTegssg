@@ -1,0 +1,46 @@
+local player = game.Players.LocalPlayer
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "VoiceCaptionGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Name = "CaptionLabel"
+textLabel.Size = UDim2.new(1, 0, 0.15, 0)
+textLabel.Position = UDim2.new(0, 0, 0.85, 0)
+textLabel.BackgroundTransparency = 0.4
+textLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.Font = Enum.Font.GothamBold
+textLabel.TextScaled = true
+textLabel.Text = ""
+textLabel.Parent = screenGui
+
+local sound = Instance.new("Sound", workspace)
+sound.Name = "VoiceLine"
+sound.SoundId = "rbxassetid://94023935320269" -- Replace with your actual voice sound ID
+sound.Volume = 1
+
+local Captions = {
+	{ text = "What if?", time = 0 },
+	{ text = "Hindi mo ako mahal!", time = 1.8 },
+	{ text = "", time = 3.8 }
+}
+
+task.spawn(function()
+	sound:Play()
+	
+	for i, caption in ipairs(Captions) do
+		local nextTime = Captions[i + 1] and Captions[i + 1].time or sound.TimeLength
+		local duration = nextTime - caption.time
+		
+		task.delay(caption.time, function()
+			textLabel.Text = caption.text
+			task.wait(duration)
+			if textLabel.Text == caption.text then
+				textLabel.Text = ""
+			end
+		end)
+	end
+end)
